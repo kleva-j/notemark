@@ -11,8 +11,8 @@ let win;
 function createWindow() {
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
-    width: 900,
-    height: 670,
+    width: 1200,
+    height: 800,
     title: "NoteMark",
     center: true,
     vibrancy: "under-window",
