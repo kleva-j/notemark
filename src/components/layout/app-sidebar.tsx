@@ -62,10 +62,9 @@ export function SidebarLayout({
                 {data.navMain.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
-                      tooltip={{
-                        children: item.title,
-                        hidden: false,
-                      }}
+                      tooltip={{ children: item.title, hidden: false }}
+                      isActive={activeItem?.title === item.title}
+                      className="px-2.5 md:px-2"
                       onClick={() => {
                         setActiveItem(item);
                         const mail = data.mails.sort(() => Math.random() - 0.5);
@@ -77,8 +76,6 @@ export function SidebarLayout({
                         );
                         setOpen(true);
                       }}
-                      isActive={activeItem?.title === item.title}
-                      className="px-2.5 md:px-2"
                     >
                       <item.icon />
                       <span>{item.title}</span>
