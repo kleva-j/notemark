@@ -1,8 +1,15 @@
 import type { CSSProperties, PropsWithChildren } from "react";
 
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import { SidebarLayout } from "@/components/layout/app-sidebar";
 import { Separator } from "@/components/ui/separator";
+import { Children } from "react";
+
+import {
+  SidebarProvider,
+  SidebarTrigger,
+  SidebarInset,
+} from "@/components/ui/sidebar";
+
 import {
   BreadcrumbSeparator,
   BreadcrumbItem,
@@ -14,9 +21,7 @@ import {
 
 export function AppLayout({ children }: PropsWithChildren) {
   return (
-    <SidebarProvider
-      style={{ "--sidebar-width": "350px" } as CSSProperties}
-    >
+    <SidebarProvider style={{ "--sidebar-width": "350px" } as CSSProperties}>
       <SidebarLayout />
       <SidebarInset>
         <header className="bg-background sticky top-0 flex shrink-0 items-center gap-2 border-b p-4">
@@ -37,7 +42,9 @@ export function AppLayout({ children }: PropsWithChildren) {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        {children}
+        <div className="flex flex-col items-center justify-center min-h-[calc(100vh_-_theme(spacing.16))] p-4">
+          {Children.map(children, (child) => child)}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );
