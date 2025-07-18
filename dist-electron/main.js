@@ -7,17 +7,18 @@ const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL;
 const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
-let win;
+let window;
 function createWindow() {
-  win = new BrowserWindow({
+  window = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
-    width: 1200,
-    height: 800,
+    width: 1360,
+    height: 840,
     title: "NoteMark",
     center: true,
     vibrancy: "under-window",
     trafficLightPosition: { x: 15, y: 10 },
-    titleBarStyle: "hidden",
+    titleBarStyle: process.platform === "darwin" ? "hidden" : "default",
+    autoHideMenuBar: true,
     frame: false,
     visualEffectState: "active",
     webPreferences: {
@@ -26,19 +27,24 @@ function createWindow() {
       contextIsolation: true
     }
   });
-  win.webContents.on("did-finish-load", () => {
-    win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
-  });
+  window.webContents.on(
+    "did-finish-load",
+    () => window == null ? void 0 : window.webContents.send(
+      "main-process-message",
+      (/* @__PURE__ */ new Date()).toLocaleString()
+    )
+  );
+  window.webContents.openDevTools();
   if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL);
+    window.loadURL(VITE_DEV_SERVER_URL);
   } else {
-    win.loadFile(path.join(RENDERER_DIST, "index.html"));
+    window.loadFile(path.join(RENDERER_DIST, "index.html"));
   }
 }
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
-    win = null;
+    window = null;
   }
 });
 app.on("activate", () => {
