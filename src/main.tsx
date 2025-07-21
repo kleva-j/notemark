@@ -3,6 +3,7 @@ import React from "react";
 
 import { App } from "@/App";
 
+import "@fontsource/architects-daughter";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
