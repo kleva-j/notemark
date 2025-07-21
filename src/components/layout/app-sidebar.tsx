@@ -1,3 +1,4 @@
+import { NoteList } from "@/components/note/note-list";
 import { NavUser } from "@/components/nav-user";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -22,10 +23,7 @@ import {
 export function SidebarLayout({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  // Note: I'm using state to show active item.
-  // IRL you should use the url/router.
   const [activeItem, setActiveItem] = useState(data.navMain[0]);
-  const [mails, setMails] = useState(data.mails);
   const { setOpen } = useSidebar();
 
   return (
@@ -67,13 +65,6 @@ export function SidebarLayout({
                       className="px-2.5 md:px-2"
                       onClick={() => {
                         setActiveItem(item);
-                        const mail = data.mails.sort(() => Math.random() - 0.5);
-                        setMails(
-                          mail.slice(
-                            0,
-                            Math.max(5, Math.floor(Math.random() * 10) + 1)
-                          )
-                        );
                         setOpen(true);
                       }}
                     >
@@ -108,24 +99,7 @@ export function SidebarLayout({
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup className="px-0">
-            <SidebarGroupContent>
-              {mails.map((mail) => (
-                <a
-                  href="#home"
-                  key={mail.email}
-                  className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-0"
-                >
-                  <div className="flex w-full items-center gap-2">
-                    <span>{mail.name}</span>{" "}
-                    <span className="ml-auto text-xs">{mail.date}</span>
-                  </div>
-                  <span className="font-medium">{mail.subject}</span>
-                  <span className="line-clamp-2 w-[260px] text-xs whitespace-break-spaces">
-                    {mail.teaser}
-                  </span>
-                </a>
-              ))}
-            </SidebarGroupContent>
+            <NoteList />
           </SidebarGroup>
         </SidebarContent>
       </Sidebar>

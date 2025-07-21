@@ -24,7 +24,7 @@ export function AppLayout({ children }: PropsWithChildren) {
     <SidebarProvider style={{ "--sidebar-width": "350px" } as CSSProperties}>
       <SidebarLayout />
       <SidebarInset>
-        <header className="bg-background sticky top-0 flex shrink-0 items-center gap-2 border-b p-4">
+        <header className="bg-background sticky top-0 flex shrink-0 items-center gap-2 border-b p-4 z-1">
           <SidebarTrigger className="-ml-1" />
           <Separator
             orientation="vertical"
@@ -42,7 +42,7 @@ export function AppLayout({ children }: PropsWithChildren) {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="flex flex-col items-center justify-center min-h-[calc(100vh_-_theme(spacing.16))] p-4">
+        <div className="flex flex-col items-center justify-center min-h-[calc(100vh_-_theme(spacing.16))]">
           {Children.map(children, (child) => child)}
         </div>
       </SidebarInset>
