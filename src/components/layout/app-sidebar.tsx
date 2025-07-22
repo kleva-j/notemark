@@ -1,10 +1,10 @@
 import { NoteList } from "@/components/note/note-list";
+import { staticData, MainNavTabs } from "@/lib/data";
 import { NavUser } from "@/components/nav-user";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Command } from "lucide-react";
-import { data } from "@/lib/data";
-import { useState } from "react";
+import { useRoot } from "@/store";
 
 import {
   SidebarGroupContent,
@@ -23,8 +23,10 @@ import {
 export function SidebarLayout({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const [activeItem, setActiveItem] = useState(data.navMain[0]);
+  const { state, setActiveSidebarTab } = useRoot();
   const { setOpen } = useSidebar();
+
+  const { activeSidebarTab: activeTab } = state;
 
   return (
     <Sidebar
@@ -57,14 +59,14 @@ export function SidebarLayout({
           <SidebarGroup>
             <SidebarGroupContent className="px-1.5 md:px-0">
               <SidebarMenu>
-                {data.navMain.map((item) => (
+                {MainNavTabs.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       tooltip={{ children: item.title, hidden: false }}
-                      isActive={activeItem?.title === item.title}
+                      isActive={activeTab === item.title}
                       className="px-2.5 md:px-2"
                       onClick={() => {
-                        setActiveItem(item);
+                        setActiveSidebarTab(item.title);
                         setOpen(true);
                       }}
                     >
@@ -78,7 +80,7 @@ export function SidebarLayout({
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
-          <NavUser user={data.user} />
+          <NavUser user={staticData.user} />
         </SidebarFooter>
       </Sidebar>
 
@@ -88,7 +90,7 @@ export function SidebarLayout({
         <SidebarHeader className="gap-3.5 border-b p-4">
           <div className="flex w-full items-center justify-between">
             <div className="text-foreground text-base font-medium">
-              {activeItem?.title}
+              {activeTab}
             </div>
             <Label className="flex items-center gap-2 text-sm">
               <span>Unreads</span>

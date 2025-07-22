@@ -1,4 +1,4 @@
-import type { NoteInfo } from "@/models";
+import { SidebarTabs, type NoteInfo } from "@/models";
 
 import { genDateFromRange } from "@/lib/utils";
 
@@ -27,6 +27,7 @@ Best regards,
 Team Lead`,
     description:
       "Hi team, just a reminder about our meeting tomorrow at 10 AM.\nPlease come prepared with your project updates.",
+    category: null,
   },
   {
     id: "2",
@@ -56,6 +57,7 @@ Cheers,
 Team Organizer`,
     description:
       "Hey everyone! I'm thinking of organizing a team outing this weekend.\nWould you be interested in a hiking trip or a beach day?",
+    category: SidebarTabs.drafts,
   },
   {
     id: "3",
@@ -87,6 +89,7 @@ Best regards,
 Vacation Planner`,
     description:
       "Just a heads up that I'll be taking a two-week vacation next month.\nI'll make sure all my projects are up to date before I leave.",
+    category: SidebarTabs.junk,
   },
   {
     id: "4",
@@ -126,6 +129,7 @@ Best regards,
 Innovation Team`,
     description:
       "I've been brainstorming and came up with an interesting project concept.\nDo you have time this week to discuss its potential impact and feasibility?",
+    category: SidebarTabs.trash,
   },
   {
     id: "5",
@@ -166,6 +170,7 @@ Best regards,
 Reviewer`,
     description:
       "Thank you for sending over the proposal. I've reviewed it and have some thoughts.\nCould we schedule a meeting to discuss my feedback in detail?",
+    category: null,
   },
   {
     id: "6",
@@ -204,6 +209,7 @@ Best regards,
 Conference Attendee`,
     description:
       "I've completed the registration for the upcoming tech conference.\nLet me know if you need any additional information from my end.",
+    category: SidebarTabs.drafts,
   },
   {
     id: "7",
@@ -247,6 +253,7 @@ Best regards,
 Event Organizer`,
     description:
       "To celebrate our recent project success, I'd like to organize a team dinner.\nAre you available next Friday evening? Please let me know your preferences.",
+    category: SidebarTabs.junk,
   },
   {
     id: "8",
@@ -288,6 +295,7 @@ Best regards,
 Executive Team`,
     description:
       "Please join us for an all-hands meeting this Friday at 3 PM.\nWe have some exciting news to share about the company's future.",
+    category: SidebarTabs.trash,
   },
   {
     id: "9",
@@ -331,6 +339,7 @@ Best regards,
 Project Manager`,
     description:
       "Thanks for the update. The progress looks great so far.\nLet's schedule a call to discuss the next steps.",
+    category: null,
   },
   {
     id: "10",
@@ -369,6 +378,7 @@ Best regards,
 Finance Team`,
     description:
       "I've reviewed the budget numbers you sent over.\nCan we set up a quick call to discuss some potential adjustments?",
+    category: SidebarTabs.drafts,
   },
   {
     id: "11",
@@ -419,6 +429,7 @@ Best regards,
 Marketing Team`,
     description:
       "I've been working on the marketing strategy for the new product.\nCan we schedule a meeting to discuss the details?",
+    category: SidebarTabs.junk,
   },
   {
     id: "12",
@@ -471,6 +482,7 @@ Best regards,
 Product Team`,
     description:
       "I've been working on the new product launch.\nCan we schedule a meeting to discuss the details?",
+    category: SidebarTabs.trash,
   },
 ].map((item) => {
   const createdAt = genDateFromRange();
