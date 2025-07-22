@@ -1,16 +1,18 @@
 import { DraggableTopbar } from "@/components/draggable-topbar";
 import { NoteContent } from "@/components/note/note-content";
 import { AppLayout } from "@/components/layout/app-layout";
-import { NoteProvider } from "@/components/note";
+import { NoteProvider, RootProvider } from "@/store";
 
 export function App() {
   return (
-    <NoteProvider>
-      <DraggableTopbar />
-      <AppLayout>
-        <NoteContent />
-      </AppLayout>
-    </NoteProvider>
+    <RootProvider>
+      <NoteProvider>
+        <DraggableTopbar />
+        <AppLayout>
+          <NoteContent />
+        </AppLayout>
+      </NoteProvider>
+    </RootProvider>
   );
 }
 

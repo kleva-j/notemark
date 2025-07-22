@@ -10,6 +10,8 @@ import {
 } from "react";
 
 import { MockNotes } from "@/store/mocks";
+import { SidebarTabs } from "@/models";
+import { useRoot } from "@/store/root";
 
 // State interface
 interface NoteState {
@@ -138,6 +140,7 @@ export function NoteProvider({ children }: NoteProviderProps) {
         description: description || content?.substring(0, 100) || "",
         createdAt: now,
         updatedAt: now,
+        category: null,
       };
 
       dispatch({ type: "ADD_NOTE", payload: newNote });
@@ -171,19 +174,29 @@ export function NoteProvider({ children }: NoteProviderProps) {
   }, []);
 
   // Computed values
+  const { state: rootState } = useRoot();
+
+  const activeSidebarTab = rootState.activeSidebarTab;
+
   const filteredNotes = useMemo(() => {
+    let notes = state.notes;
+
+    if (activeSidebarTab && activeSidebarTab !== SidebarTabs.inbox) {
+      notes = notes.filter((note) => note.category === activeSidebarTab);
+    }
+
     if (!state.searchQuery.trim()) {
-      return state.notes;
+      return notes;
     }
 
     const query = state.searchQuery.toLowerCase();
-    return state.notes.filter(
+    return notes.filter(
       (note) =>
         note.title.toLowerCase().includes(query) ||
         note.description?.toLowerCase().includes(query) ||
         note.content?.toLowerCase().includes(query)
     );
-  }, [state.notes, state.searchQuery]);
+  }, [state.notes, state.searchQuery, activeSidebarTab]);
 
   const selectedNote = useMemo(() => {
     return state.selectedNoteId ? getNote(state.selectedNoteId) : undefined;
@@ -195,16 +208,16 @@ export function NoteProvider({ children }: NoteProviderProps) {
   }, []);
 
   const contextValue: NoteContextType = {
-    state,
-    createNote,
-    updateNote,
-    deleteNote,
-    getNote,
-    selectNote,
     setSearchQuery,
     filteredNotes,
     selectedNote,
     clearError,
+    createNote,
+    updateNote,
+    deleteNote,
+    selectNote,
+    getNote,
+    state,
   };
 
   return (
