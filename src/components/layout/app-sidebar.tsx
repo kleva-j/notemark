@@ -3,8 +3,8 @@ import { staticData, MainNavTabs } from "@/lib/data";
 import { NavUser } from "@/components/nav-user";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Command } from "lucide-react";
-import { useRoot } from "@/store";
+import { Command, Plus } from "lucide-react";
+import { Pathname, useRoot } from "@/store";
 
 import {
   SidebarGroupContent,
@@ -23,8 +23,12 @@ import {
 export function SidebarLayout({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const { state, setActiveSidebarTab } = useRoot();
+  const { state, setActiveSidebarTab, setPathname } = useRoot();
   const { setOpen } = useSidebar();
+
+  const createNote = () => {
+    setPathname(Pathname.createNote);
+  };
 
   const { activeSidebarTab: activeTab } = state;
 
@@ -75,6 +79,21 @@ export function SidebarLayout({
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupContent className="px-0">
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    onClick={createNote}
+                    tooltip="Create a new note"
+                    className="size-8 bg-transparent cursor-pointer border"
+                  >
+                    <Plus />
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
