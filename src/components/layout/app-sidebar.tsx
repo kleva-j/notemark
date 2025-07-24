@@ -1,8 +1,6 @@
 import { NoteList } from "@/components/note/note-list";
 import { staticData, MainNavTabs } from "@/lib/data";
 import { NavUser } from "@/components/nav-user";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { Command, Plus } from "lucide-react";
 import { Pathname, useRoot } from "@/store";
 
@@ -107,14 +105,8 @@ export function SidebarLayout({
       {/* We disable collapsible and let it fill remaining space */}
       <Sidebar collapsible="none" className="hidden flex-1 md:flex">
         <SidebarHeader className="gap-3.5 border-b p-4">
-          <div className="flex w-full items-center justify-between">
-            <div className="text-foreground text-base font-medium">
-              {activeTab}
-            </div>
-            <Label className="flex items-center gap-2 text-sm">
-              <span>Unreads</span>
-              <Switch className="shadow-none" />
-            </Label>
+          <div className="text-foreground text-base font-medium">
+            {activeTab}
           </div>
           <SidebarInput placeholder="Type to search..." />
         </SidebarHeader>

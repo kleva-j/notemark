@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ToggleMode } from "@/components/toggle-mode";
 
 import {
   ChevronsUpDown,
@@ -39,6 +40,9 @@ export function NavUser({ user }: NavUserProps) {
 
   return (
     <SidebarMenu>
+      <SidebarMenuItem className="mb-4">
+        <ToggleMode className="rounded-lg" />
+      </SidebarMenuItem>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
