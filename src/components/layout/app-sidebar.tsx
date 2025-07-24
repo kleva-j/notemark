@@ -66,7 +66,7 @@ export function SidebarLayout({
                     <SidebarMenuButton
                       tooltip={{ children: item.title, hidden: false }}
                       isActive={activeTab === item.title}
-                      className="px-2.5 md:px-2"
+                      className="px-2.5 md:px-2 dark:data-[active=true]:bg-highlight"
                       onClick={() => {
                         setActiveSidebarTab(item.title);
                         setOpen(true);

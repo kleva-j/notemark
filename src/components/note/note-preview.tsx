@@ -23,8 +23,8 @@ export const NotePreview = (props: NotePreviewProps) => {
       className={cn(
         "flex flex-col items-start gap-2 border-b p-4 text-sm leading-tight whitespace-nowrap last:border-b-1 cursor-pointer transition-all duration-200 ease-linear",
         {
-          "bg-primary text-primary-foreground": isActive,
-          "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground":
+          "bg-primary text-primary-foreground dark:bg-highlight-dark": isActive,
+          "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground dark:hover:bg-highlight":
             !isActive,
         }
       )}

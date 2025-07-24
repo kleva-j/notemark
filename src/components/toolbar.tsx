@@ -29,7 +29,7 @@ export function Toolbar() {
   return (
     <MotionConfig transition={transition}>
       <div className="absolute top-8 right-8 z-1" ref={containerRef}>
-        <div className="h-full w-full rounded-xl border border-zinc-950/10 bg-white">
+        <div className="h-full w-full rounded-xl border border-zinc-950/10 bg-white dark:bg-highlight">
           <motion.div
             animate={{ width: isOpen ? "240px" : "96px" }}
             initial={false}
@@ -39,11 +39,11 @@ export function Toolbar() {
                 <div className="flex gap-2">
                   <DeleteNoteAlert noteId={selectedNote?.id}>
                     <Button
-                      className="cursor-pointer size-9"
+                      className="cursor-pointer size-9 dark:bg-red-400"
                       aria-label="User profile"
                       variant="destructive"
                     >
-                      <Trash className="h-5 w-5" />
+                      <Trash className="size-5" />
                     </Button>
                   </DeleteNoteAlert>
                   <Button

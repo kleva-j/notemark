@@ -41,7 +41,7 @@ export function NavUser({ user }: NavUserProps) {
   return (
     <SidebarMenu>
       <SidebarMenuItem className="mb-4">
-        <ToggleMode className="rounded-lg" />
+        <ToggleMode className="rounded-lg dark:bg-highlight dark:hover:bg-highlight-dark" />
       </SidebarMenuItem>
       <SidebarMenuItem>
         <DropdownMenu>
