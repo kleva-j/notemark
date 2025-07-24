@@ -8,25 +8,46 @@ import {
   useReducer,
 } from "react";
 
+export const Pathname = {
+  root: "/",
+  createNote: "/create-note",
+} as const;
+
+const Locales = {
+  en: "en",
+  es: "es",
+  fr: "fr",
+  de: "de",
+  it: "it",
+  pt: "pt",
+  ru: "ru",
+  zh: "zh",
+} as const;
+
+type Locale = (typeof Locales)[keyof typeof Locales];
+type Pathname = (typeof Pathname)[keyof typeof Pathname];
+
 // --- Types ---
 export interface RootState {
-  pathname: string;
-  locale: string;
+  pathname: Pathname;
+  locale: Locale;
   activeSidebarTab: SidebarTabs;
   // Add more global state fields as needed
 }
 
 export type RootAction =
-  | { type: "SET_PATHNAME"; payload: string }
-  | { type: "SET_LOCALE"; payload: string }
+  | { type: "SET_PATHNAME"; payload: Pathname }
+  | { type: "SET_LOCALE"; payload: Locale }
   | { type: "SET_ACTIVE_SIDEBAR_TAB"; payload: SidebarTabs }
+  | { type: "RESET_PATHNAME" }
   | { type: "RESET" };
 
 interface RootContextType {
   state: RootState;
-  setPathname: (pathname: string) => void;
-  setLocale: (locale: string) => void;
+  setPathname: (pathname: Pathname) => void;
+  setLocale: (locale: Locale) => void;
   setActiveSidebarTab: (tab: SidebarTabs) => void;
+  resetPathname: () => void;
   reset: () => void;
 }
 
@@ -46,6 +67,8 @@ function rootReducer(state: RootState, action: RootAction): RootState {
       return { ...state, locale: action.payload };
     case "SET_ACTIVE_SIDEBAR_TAB":
       return { ...state, activeSidebarTab: action.payload };
+    case "RESET_PATHNAME":
+      return { ...state, pathname: "/" };
     case "RESET":
       return initialState;
     default:
@@ -60,16 +83,20 @@ const RootContext = createContext<RootContextType | undefined>(undefined);
 export function RootProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(rootReducer, initialState);
 
-  const setPathname = useCallback((pathname: string) => {
+  const setPathname = useCallback((pathname: Pathname) => {
     dispatch({ type: "SET_PATHNAME", payload: pathname });
   }, []);
 
-  const setLocale = useCallback((locale: string) => {
+  const setLocale = useCallback((locale: Locale) => {
     dispatch({ type: "SET_LOCALE", payload: locale });
   }, []);
 
   const setActiveSidebarTab = useCallback((tab: SidebarTabs) => {
     dispatch({ type: "SET_ACTIVE_SIDEBAR_TAB", payload: tab });
+  }, []);
+
+  const resetPathname = useCallback(() => {
+    dispatch({ type: "RESET_PATHNAME" });
   }, []);
 
   const reset = useCallback(() => {
@@ -81,6 +108,7 @@ export function RootProvider({ children }: { children: ReactNode }) {
     setPathname,
     setLocale,
     setActiveSidebarTab,
+    resetPathname,
     reset,
   };
 
@@ -95,3 +123,18 @@ export function useRoot() {
   }
   return context;
 }
+
+export const useRootState = () => useRoot().state;
+
+export const useRootOperations = () => {
+  const { setPathname, setLocale, setActiveSidebarTab, resetPathname, reset } =
+    useRoot();
+
+  return {
+    setPathname,
+    setLocale,
+    setActiveSidebarTab,
+    resetPathname,
+    reset,
+  };
+};

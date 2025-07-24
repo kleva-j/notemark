@@ -71,7 +71,13 @@ function noteReducer(state: NoteState, action: NoteAction): NoteState {
       return { ...state, notes: action.payload };
 
     case "ADD_NOTE":
-      return { ...state, notes: [action.payload, ...state.notes] };
+      return {
+        ...state,
+        notes: [
+          action.payload,
+          ...state.notes.filter((note) => note.title !== action.payload.title),
+        ],
+      };
 
     case "UPDATE_NOTE":
       return {
@@ -135,8 +141,8 @@ export function NoteProvider({ children }: NoteProviderProps) {
 
       const newNote: NoteInfo = {
         id,
-        title,
         content,
+        title: title.trim(),
         description: description || content?.substring(0, 100) || "",
         createdAt: now,
         updatedAt: now,
@@ -144,6 +150,7 @@ export function NoteProvider({ children }: NoteProviderProps) {
       };
 
       dispatch({ type: "ADD_NOTE", payload: newNote });
+      dispatch({ type: "SELECT_NOTE", payload: newNote.id });
       return id;
     },
     [generateId]
