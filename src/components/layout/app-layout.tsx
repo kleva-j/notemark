@@ -11,7 +11,7 @@ export function AppLayout({ children }: PropsWithChildren) {
       <SidebarLayout />
       <SidebarInset>
         <ContentHeader />
-        <div className="flex flex-col items-center justify-center min-h-[calc(100vh_-_theme(spacing.16))]">
+        <div className="flex flex-col items-center justify-center h-[calc(100vh_-_theme(spacing.16))] relative">
           {Children.map(children, (child) => child)}
         </div>
       </SidebarInset>
