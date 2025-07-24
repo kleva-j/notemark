@@ -9,7 +9,6 @@ import {
   useMemo,
 } from "react";
 
-import { MockNotes } from "@/store/mocks";
 import { SidebarTabs } from "@/models";
 import { useRoot } from "@/store/root";
 
@@ -54,10 +53,7 @@ interface NoteContextType {
 
 // Initial state
 const initialState: NoteState = {
-  notes: MockNotes.sort(
-    ({ createdAt: a }, { createdAt: b }) =>
-      new Date(b).getTime() - new Date(a).getTime()
-  ),
+  notes: [],
   selectedNoteId: null,
   searchQuery: "",
   isLoading: false,

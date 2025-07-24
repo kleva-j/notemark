@@ -22,7 +22,7 @@ export function genDateFromRange(dateCursor: DateArg<Date> = new Date()): Date {
 
   switch (rangeType) {
     case "minutes": {
-      const minutes = randomInt(59); // Random minutes between 1 and 59
+      const minutes = randomInt(59, 1); // Random minutes between 1 and 59
       return subMinutes(dateCursor, minutes);
     }
     case "hours": {

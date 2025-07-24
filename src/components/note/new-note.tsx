@@ -11,7 +11,7 @@ interface NotePopoverProps extends ComponentProps<"div"> {
   onClose: () => void;
 }
 
-export const NewNotePopover = (props: NotePopoverProps) => {
+export const CreateNoteDialog = (props: NotePopoverProps) => {
   const { ref, show, onClose } = props;
   const { createNote } = useNoteOperations();
   const [title, setTitle] = useState("");
