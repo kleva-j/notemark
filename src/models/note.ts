@@ -14,3 +14,11 @@ export type NoteInfo = {
 };
 
 export type NoteContent = string;
+
+export type GetNotes = () => Promise<NoteInfo[]>;
+
+export type GetNoteInfoFromFilename = (filename: string) => Promise<NoteInfo>;
+
+export type SaveOrUpdateNote = (note: NoteInfo) => Promise<void>;
+
+export type DeleteNote = (note: NoteInfo) => Promise<void>;

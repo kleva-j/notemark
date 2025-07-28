@@ -1,96 +1,148 @@
-import type { ComponentProps, RefObject } from "react";
+import type { ComponentProps } from "react";
 
-import { motion, AnimatePresence } from "motion/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useNoteOperations } from "@/store";
+import { useForm } from "react-hook-form";
 import { SidebarTabs } from "@/models";
-import { useState } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
+
+import {
+  FormMessage,
+  FormControl,
+  FormLabel,
+  FormField,
+  FormItem,
+  Form,
+} from "@/components/ui/form";
+
+import {
+  DialogDescription,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogClose,
+  Dialog,
+} from "@/components/ui/dialog";
+
+const formSchema = z.object({
+  title: z.string().min(1, "Title is required").max(30, "Title is too long"),
+  content: z.string(),
+  category: z.enum(SidebarTabs),
+});
+
+export type FormValues = z.infer<typeof formSchema>;
+
+const defaultValues: FormValues = {
+  title: "",
+  content: "",
+  category: SidebarTabs.inbox,
+};
+
+const resolver = zodResolver(formSchema);
 
 interface NotePopoverProps extends ComponentProps<"div"> {
-  ref?: RefObject<HTMLDivElement>;
   show: boolean;
   onClose: () => void;
 }
 
 export const CreateNoteDialog = (props: NotePopoverProps) => {
-  const { ref, show, onClose } = props;
+  const { show, onClose } = props;
   const { createNote } = useNoteOperations();
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [category, setCategory] = useState<SidebarTabs>(SidebarTabs.inbox);
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    createNote(title, content, undefined); // Only pass 3 arguments
-    setLoading(false);
-    setTitle("");
-    setContent("");
-    setCategory(SidebarTabs.inbox);
+  const form = useForm<FormValues>({ resolver, defaultValues });
+
+  const onSubmit = (data: FormValues) => {
+    const { title, content, category } = data;
+    createNote(title, category, content);
+    form.reset();
     onClose();
+    toast("Note created successfully");
   };
 
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ type: "spring", bounce: 0.18, duration: 0.25 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/10 backdrop-blur-sm"
-        >
-          <form
-            onSubmit={handleSubmit}
-            className="bg-white/80 backdrop-blur-lg rounded-xl shadow-xl p-6 w-full max-w-md flex flex-col gap-4 border border-zinc-200"
-          >
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-lg font-semibold">New Note</h2>
-              <button
-                type="button"
-                onClick={onClose}
-                className="text-zinc-500 hover:text-zinc-800 rounded p-1"
-                aria-label="Close"
-              >
-                ×
-              </button>
-            </div>
-            <input
-              className="rounded border border-zinc-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-zinc-400"
-              placeholder="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
+    <Dialog open={show} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent showCloseButton>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <DialogHeader>
+              <DialogTitle>New Note</DialogTitle>
+              <DialogDescription>
+                Fill in the details to create a new note.
+              </DialogDescription>
+            </DialogHeader>
+
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter note title" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <textarea
-              className="rounded border border-zinc-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-zinc-400 min-h-[80px]"
-              placeholder="Content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
+
+            <FormField
+              control={form.control}
+              name="content"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Content</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter note content"
+                      className="min-h-[120px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <select
-              className="rounded border border-zinc-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-zinc-400"
-              value={category}
-              onChange={(e) => setCategory(e.target.value as SidebarTabs)}
-            >
-              {Object.values(SidebarTabs).map((tab) => (
-                <option key={tab} value={tab}>
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </option>
-              ))}
-            </select>
-            <button
-              type="submit"
-              className="bg-zinc-900 text-white rounded px-4 py-2 font-medium hover:bg-zinc-800 transition disabled:opacity-50"
-              disabled={loading || !title.trim() || !content.trim()}
-            >
-              {loading ? "Creating..." : "Create Note"}
-            </button>
+
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <FormControl>
+                    <select
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      {...field}
+                    >
+                      {Object.values(SidebarTabs).map((tab) => (
+                        <option key={tab} value={tab}>
+                          {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                        </option>
+                      ))}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? "Creating..." : "Create Note"}
+              </Button>
+            </DialogFooter>
           </form>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 };

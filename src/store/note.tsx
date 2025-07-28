@@ -12,6 +12,23 @@ import {
 import { SidebarTabs } from "@/models";
 import { useRoot } from "@/store/root";
 
+export const loadNotes = async () => {
+  const notes = (await window.context.getNotes()).sort(
+    ({ createdAt: a }, { createdAt: b }) =>
+      new Date(b).getTime() - new Date(a).getTime()
+  );
+
+  return notes;
+};
+
+export const saveOrUpdateNote = async (note: NoteInfo) => {
+  await window.context.saveOrUpdateNote(note);
+};
+
+export const deleteNote = async (note: NoteInfo) => {
+  await window.context.deleteNote(note);
+};
+
 // State interface
 interface NoteState {
   notes: NoteInfo[];
@@ -37,7 +54,12 @@ type NoteAction =
 interface NoteContextType {
   state: NoteState;
   // CRUD operations
-  createNote: (title: string, content?: string, description?: string) => string;
+  createNote: (
+    title: string,
+    category: SidebarTabs,
+    content?: string,
+    description?: string
+  ) => string;
   updateNote: (id: string, updates: Partial<NoteInfo>) => void;
   deleteNote: (id: string) => void;
   getNote: (id: string) => NoteInfo | undefined;
@@ -53,7 +75,7 @@ interface NoteContextType {
 
 // Initial state
 const initialState: NoteState = {
-  notes: [],
+  notes: await loadNotes(),
   selectedNoteId: null,
   searchQuery: "",
   isLoading: false,
@@ -131,7 +153,12 @@ export function NoteProvider({ children }: NoteProviderProps) {
 
   // CRUD operations
   const createNote = useCallback(
-    (title: string, content = "", description?: string): string => {
+    (
+      title: string,
+      category: SidebarTabs,
+      content = "",
+      description = ""
+    ): string => {
       const id = generateId();
       const now = new Date();
 
@@ -139,10 +166,10 @@ export function NoteProvider({ children }: NoteProviderProps) {
         id,
         content,
         title: title.trim(),
-        description: description || content?.substring(0, 100) || "",
+        description: description || content.substring(0, 100) || "",
         createdAt: now,
         updatedAt: now,
-        category: null,
+        category,
       };
 
       dispatch({ type: "ADD_NOTE", payload: newNote });

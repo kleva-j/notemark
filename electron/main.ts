@@ -1,5 +1,9 @@
-import { app, BrowserWindow } from "electron";
+import type { DeleteNote, GetNotes, SaveOrUpdateNote } from "@/models";
+
+import { app, BrowserWindow, ipcMain } from "electron";
 import { fileURLToPath } from "node:url";
+
+import { deleteNote, getNotes, saveOrUpdateNote } from "../src/lib/fs";
 
 import path from "node:path";
 
@@ -32,7 +36,7 @@ let window: BrowserWindow | null;
 
 function createWindow() {
   window = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+    icon: path.join(process.env.VITE_PUBLIC ?? "", "electron-vite.svg"),
     width: 1360,
     height: 840,
     title: "NoteMark",
@@ -47,6 +51,7 @@ function createWindow() {
       preload: path.join(__dirname, "preload.mjs"),
       sandbox: true,
       contextIsolation: true,
+      nodeIntegration: true,
     },
   });
 
@@ -86,4 +91,18 @@ app.on("activate", () => {
   }
 });
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  ipcMain.handle("getNotes", (_, ...args: Parameters<GetNotes>) =>
+    getNotes(...args)
+  );
+
+  ipcMain.handle("saveOrUpdateNote", (_, ...args: Parameters<SaveOrUpdateNote>) =>
+    saveOrUpdateNote(...args)
+  );
+
+  ipcMain.handle("deleteNote", async (_, ...args: Parameters<DeleteNote>) =>
+    deleteNote(...args)
+  );
+
+  createWindow();
+});

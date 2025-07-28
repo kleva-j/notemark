@@ -1,3 +1,5 @@
+import type { DeleteNote, GetNotes, SaveOrUpdateNote } from "@/models";
+
 import { ipcRenderer, contextBridge } from "electron";
 
 // --------- Expose some API to the Renderer process ---------
@@ -30,4 +32,17 @@ contextBridge.exposeInMainWorld("versions", {
   chrome: () => process.versions.chrome,
   electron: () => process.versions.electron,
   // we can also expose variables, not just functions
+});
+
+contextBridge.exposeInMainWorld("context", {
+  locale: navigator.language,
+
+  getNotes: (...args: Parameters<GetNotes>) =>
+    ipcRenderer.invoke("getNotes", ...args),
+
+  saveOrUpdateNote: (...args: Parameters<SaveOrUpdateNote>) =>
+    ipcRenderer.invoke("saveOrUpdateNote", ...args),
+
+  deleteNote: (...args: Parameters<DeleteNote>) =>
+    ipcRenderer.invoke("deleteNote", ...args),
 });

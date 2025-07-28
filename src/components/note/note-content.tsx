@@ -1,29 +1,19 @@
-import { useDebounceCallback } from "@/hooks/use-debounce-callback";
 import { useOnClickOutside } from "@/hooks/use-onclick-outside";
+import { useMarkdownEditor } from "@/hooks/use-markdown-editor";
 import { EmptyContent } from "@/components/empty-note";
-import { useNotes, useNoteSelection } from "@/store";
 import { MarkdownEditor } from "@/components/editor";
+import { useNoteSelection } from "@/store";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 
 export const NoteContent = () => {
   const [isFocused, setIsFocused] = useState(false);
 
   const { selectedNote } = useNoteSelection();
-  const { updateNote } = useNotes();
 
-  const ref = useRef<HTMLDivElement | null>(null);
+  const { handleChange } = useMarkdownEditor();
 
-  const handleChange = useDebounceCallback((content: string) => {
-    if (!selectedNote) {
-      console.error("No note selected");
-      toast.error("No note selected");
-      return;
-    }
-
-    updateNote(selectedNote.id, { content });
-  }, 1000);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const handleClickOutside = () => {
     if (isFocused) setIsFocused(false);
@@ -33,7 +23,7 @@ export const NoteContent = () => {
     if (!isFocused) setIsFocused(true);
   };
 
-  useOnClickOutside(ref, handleClickOutside);
+  useOnClickOutside(containerRef, handleClickOutside);
 
   if (!selectedNote) return <EmptyContent />;
 
@@ -45,7 +35,7 @@ export const NoteContent = () => {
         { "blur-[0.5px]": !isFocused }
       )}
       onClick={handleClickInside}
-      ref={ref}
+      ref={containerRef}
     >
       <div className="flex justify-center pt-2 sticky top-0 z-10">
         <span className="text-zinc-400/30 text-sm">{selectedNote.title}</span>

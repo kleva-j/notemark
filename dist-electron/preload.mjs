@@ -29,3 +29,9 @@ electron.contextBridge.exposeInMainWorld("versions", {
   electron: () => process.versions.electron
   // we can also expose variables, not just functions
 });
+electron.contextBridge.exposeInMainWorld("context", {
+  locale: navigator.language,
+  getNotes: (...args) => electron.ipcRenderer.invoke("getNotes", ...args),
+  saveOrUpdateNote: (...args) => electron.ipcRenderer.invoke("saveOrUpdateNote", ...args),
+  deleteNote: (...args) => electron.ipcRenderer.invoke("deleteNote", ...args)
+});

@@ -1,5 +1,12 @@
 /// <reference types="vite-plugin-electron/electron-env" />
 
+import type {
+  SaveOrUpdateNote,
+  DeleteNote,
+  NoteInfo,
+  GetNotes,
+} from "@/models";
+
 declare namespace NodeJS {
   interface ProcessEnv {
     /**
@@ -15,13 +22,26 @@ declare namespace NodeJS {
      * │
      * ```
      */
-    APP_ROOT: string
+    APP_ROOT: string;
     /** /dist/ or /public/ */
-    VITE_PUBLIC: string
+    VITE_PUBLIC: string;
   }
 }
 
 // Used in Renderer process, expose in `preload.ts`
-interface Window {
-  ipcRenderer: import('electron').IpcRenderer
+declare global {
+  interface Window {
+    ipcRenderer: import("electron").IpcRenderer;
+    versions: {
+      node: () => string;
+      chrome: () => string;
+      electron: () => string;
+    };
+    context: {
+      locale: string;
+      saveOrUpdateNote: (...args: Parameters<SaveOrUpdateNote>) => Promise<void>;
+      getNotes: (...args: Parameters<GetNotes>) => Promise<NoteInfo[]>;
+      deleteNote: (...args: Parameters<DeleteNote>) => Promise<void>;
+    };
+  }
 }
